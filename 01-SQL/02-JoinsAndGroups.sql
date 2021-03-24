@@ -10,13 +10,13 @@ SELECT p2.productLine as "Product Line", SUM(o.quantityOrdered) as "# Sold" FROM
 JOIN productlines p2 ON p2.productLine = p.productLine 
 GROUP BY 1;
 
-SELECT CONCAT(e.lastName, ", ", e.firstName) as "Sales Rep", COUNT(*) as "# Orders", COALESCE(SUM(o2.priceEach * o2.quantityOrdered), 0) as "Total Sales" FROM employees e LEFT JOIN customers c ON e.employeeNumber = c.salesRepEmployeeNumber 
+SELECT CONCAT(e.lastName, ", ", e.firstName) as "Sales Rep", COUNT(DISTINCT o.orderNumber) as "# Orders", COALESCE(SUM(o2.priceEach * o2.quantityOrdered), 0) as "Total Sales" FROM employees e LEFT JOIN customers c ON e.employeeNumber = c.salesRepEmployeeNumber 
 LEFT JOIN orders o ON o.customerNumber = c.customerNumber 
 LEFT JOIN orderdetails o2 ON o.orderNumber = o2.orderNumber
 WHERE e.jobTitle = "Sales Rep"
 GROUP BY e.employeeNumber
 ORDER BY 3 DESC;
 
-SELECT DATE_FORMAT(p2.paymentDate, "%M") as "Month", DATE_FORMAT(p2.paymentDate, "%Y") as "Year", FORMAT(p2.amount, 2) as "Payments Recieved" FROM payments p2 
+SELECT DATE_FORMAT(p2.paymentDate, "%M") as "Month", DATE_FORMAT(p2.paymentDate, "%Y") as "Year", FORMAT(SUM(p2.amount), 2) as "Payments Recieved" FROM payments p2 
 GROUP BY 1, 2 ORDER BY 2 ASC, 1 ASC;
 
